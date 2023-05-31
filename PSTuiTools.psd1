@@ -6,7 +6,7 @@
 @{
 
     RootModule           = 'PSTuiTools.psm1'
-    ModuleVersion        = '0.1.0'
+    ModuleVersion        = '0.2.0'
     CompatiblePSEditions = @('Core')
     GUID                 = '06aa991b-490e-44e6-aa6c-4fa9b8f28639'
     Author               = 'Jeff Hicks'
@@ -17,8 +17,8 @@
     PowerShellHostName   = 'ConsoleHost'
     RequiredAssemblies   = @('assemblies\NStack.dll', 'assemblies\Terminal.Gui')
     # TypesToProcess = @()
-    # FormatsToProcess = @()
-    FunctionsToExport    = 'Invoke-ProcessPeeker', 'Invoke-ServiceInfo','Get-PSTuiTools'
+    FormatsToProcess = @('formats\PSTuiTools.format.ps1xml')
+    FunctionsToExport    = 'Invoke-ProcessPeeker', 'Invoke-ServiceInfo','Get-TuiCredential','Get-PSTuiTools'
     CmdletsToExport      = ''
     VariablesToExport    = ''
     AliasesToExport      = 'ProcessPeeker', 'ServiceInfo'
