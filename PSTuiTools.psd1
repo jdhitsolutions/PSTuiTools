@@ -6,7 +6,7 @@
 @{
 
     RootModule           = 'PSTuiTools.psm1'
-    ModuleVersion        = '0.2.0'
+    ModuleVersion        = '0.3.0'
     CompatiblePSEditions = @('Core')
     GUID                 = '06aa991b-490e-44e6-aa6c-4fa9b8f28639'
     Author               = 'Jeff Hicks'
