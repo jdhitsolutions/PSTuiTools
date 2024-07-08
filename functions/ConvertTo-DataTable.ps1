@@ -3,7 +3,6 @@
 Function ConvertTo-DataTable {
     [cmdletbinding()]
     [OutputType('System.Data.DataTable')]
-    [alias('alias')]
     Param(
         [Parameter(
             Mandatory,

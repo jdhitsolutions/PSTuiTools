@@ -1,11 +1,13 @@
 
+#TODO: handle assembly conflicts on import
+
 #region Main
 
+#dot source the module commands
 Get-ChildItem -Path $PSScriptRoot\functions\*.ps1 |
 ForEach-Object { . $_.FullName }
 
 #endregion
-
 
 Function Get-PSTuiTools {
     [cmdletbinding()]

@@ -11,7 +11,7 @@
     GUID                 = '06aa991b-490e-44e6-aa6c-4fa9b8f28639'
     Author               = 'Jeff Hicks'
     CompanyName          = 'JDH Information Technology Solutions, Inc.'
-    Copyright            = '2023 JDH Information Technology Solutions, Inc.'
+    Copyright            = '2023-2024 JDH Information Technology Solutions, Inc.'
     Description          = 'A collection of PowerShell 7.x tools written using Terminal.Gui v1.11. These commands should be run from the console host.'
     PowerShellVersion    = '7.3'
     PowerShellHostName   = 'ConsoleHost'

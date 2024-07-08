@@ -1,8 +1,6 @@
 
 Using namespace Terminal.Gui
 
-
-
 <#
 Create a Terminal.GUI form that displays service information for
 a specified computer.
@@ -209,7 +207,6 @@ Function Invoke-ServiceInfo {
     #endregion
 
     #region add menus
-
     $MenuItem0 = [MenuItem]::New('_Clear form', '', { resetForm })
     $MenuItem1 = [MenuItem]::New('_Quit', '', { [Application]::RequestStop() })
     $MenuBarItem0 = [MenuBarItem]::New('_Options', @($MenuItem0, $MenuItem1))
@@ -343,7 +340,7 @@ NStack $NStackVersion
 
     $TableView.Add_SelectedCellChanged({
             $StatusBar.Items[3].Title = $script:services[$TableView.Table.Rows[$TableView.SelectedRow].Name].DisplayName
-        })
+    })
 
     $window.Add($TableView)
     #endregion
