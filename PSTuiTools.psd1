@@ -2,28 +2,35 @@
 # Module manifest for module 'PSTuiTools'
 #
 
-
 @{
 
     RootModule           = 'PSTuiTools.psm1'
     ModuleVersion        = '0.3.0'
-    CompatiblePSEditions = @('Core')
+    CompatiblePSEditions = 'Core'
     GUID                 = '06aa991b-490e-44e6-aa6c-4fa9b8f28639'
     Author               = 'Jeff Hicks'
     CompanyName          = 'JDH Information Technology Solutions, Inc.'
-    Copyright            = '2023-2024 JDH Information Technology Solutions, Inc.'
-    Description          = 'A collection of PowerShell 7.x tools written using Terminal.Gui v1.11. These commands should be run from the console host.'
-    PowerShellVersion    = '7.3'
+    Copyright            = '2023-2026 JDH Information Technology Solutions, Inc.'
+    Description          = 'A collection of PowerShell 7.x tools written using Terminal.Gui v1.19. These commands should be run from the console host.'
+    PowerShellVersion    = '7.5'
     PowerShellHostName   = 'ConsoleHost'
-    RequiredAssemblies   = @('assemblies\NStack.dll', 'assemblies\Terminal.Gui')
+    RequiredAssemblies   = @()
     # TypesToProcess = @()
-    FormatsToProcess = @('formats\PSTuiTools.format.ps1xml')
-    FunctionsToExport    = 'Invoke-ProcessPeeker', 'Invoke-ServiceInfo','Get-TuiCredential','Get-PSTuiTools'
+    FormatsToProcess     = @('formats\PSTuiTools.format.ps1xml')
+    FunctionsToExport    = @(
+        'Invoke-ProcessPeeker',
+        'Invoke-ServiceInfo',
+        'Get-TuiCredential',
+        'Get-PSTuiTools',
+        'Invoke-TuiTemplate',
+        'Invoke-TuiColorDemo',
+        'Save-TuiAssembly',
+        'Invoke-SystemStatus'
+    )
     CmdletsToExport      = ''
     VariablesToExport    = ''
-    AliasesToExport      = 'ProcessPeeker', 'ServiceInfo'
+    AliasesToExport      = 'ProcessPeeker', 'ServiceInfo','TuiTemplate','TuiStatus','TuiColorDemo'
     PrivateData          = @{
-
         PSData = @{
             Tags = @('tui', 'terminal.gui')
             # LicenseUri = ''

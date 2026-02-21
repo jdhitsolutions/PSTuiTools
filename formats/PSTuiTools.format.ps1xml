@@ -45,7 +45,7 @@ https://github.com/jdhitsolutions/PSScriptTools
                 <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Alias</PropertyName>
+                <ScriptBlock>"`e[3;38;5;119m{0}`e[0m" -f $_.Alias</ScriptBlock>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Synopsis</PropertyName>

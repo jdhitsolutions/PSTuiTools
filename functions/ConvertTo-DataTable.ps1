@@ -1,4 +1,4 @@
-#convert a collection of objects to a System.Data.Datatable
+#convert a collection of objects to a System.Data.DataTable
 
 Function ConvertTo-DataTable {
     [cmdletbinding()]

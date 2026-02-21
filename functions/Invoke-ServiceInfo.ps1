@@ -1,4 +1,3 @@
-
 Using namespace Terminal.Gui
 
 <#
@@ -84,7 +83,6 @@ function GetServiceInfo {
     }
 
 }
-
 Function ExportJson {
     if ($script:services) {
         $ReportDate = Get-Date
@@ -109,7 +107,6 @@ Function ExportJson {
     }
     $txtComputer.SetFocus()
 }
-
 Function ExportCsv {
     if ($script:services) {
         $ReportDate = Get-Date
@@ -135,7 +132,6 @@ Function ExportCsv {
     }
     $txtComputer.SetFocus()
 }
-
 Function ExportCliXML {
     if ($script:services) {
         $ReportDate = Get-Date
@@ -161,31 +157,70 @@ Function ExportCliXML {
     }
     $txtComputer.SetFocus()
 }
-#endregion
+Function ShowHelp {
+    #define help information
+    [CmdletBinding()]
+    Param()
 
-#region setup
+    $title = 'ServiceInfo Help'
+
+        $help = @"
+
+  The form defaults to the local computer name. You can also enter
+  the name of a remote compute, including alternate credentials. The
+  password will be masked.
+
+  Next, select a filtering option. Finally, click 'Get Info` to
+  retrieve service information and display in a table.
+
+  If you change the filter, you need to get services again.
+
+  Under Export, you can export the displayed data to the selected
+  data format.
+
+"@
+    $dialog = [Terminal.Gui.Dialog]@{
+        Title         = $title
+        TextAlignment = 'Left'
+        Width         = 75
+        Height        = 30
+        Text          = $help
+    }
+    $ok = [Terminal.Gui.Button]@{
+        Text = 'OK'
+    }
+    $ok.Add_Clicked({ $dialog.RequestStop() })
+    $dialog.AddButton($ok)
+    [Terminal.Gui.Application]::Run($dialog)
+
+}
+#endregion
 
 Function Invoke-ServiceInfo {
     [cmdletbinding()]
     [alias('ServiceInfo')]
-    Param()
+    Param(
+        [Parameter(Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Computername = $env:COMPUTERNAME
+    )
 
     if ($IsMacOS -OR $IsLinux) {
-        Write-Warning "This commands requires a Windows platform."
+        Write-Warning "This command requires a Windows platform."
         return
     }
     If ($host.name -ne 'ConsoleHost') {
-        Write-Warning 'This must be run in a console host.'
+        Write-Warning 'This should be run in a PowerShell console host.'
         Return
     }
 
-    $scriptVer = (Get-Module PSTuiTools).version
-    $TerminalGuiVersion = [System.Reflection.Assembly]::GetAssembly([terminal.gui.application]).GetName().version
-    $NStackVersion = [System.Reflection.Assembly]::GetAssembly([nstack.ustring]).GetName().version
+    #region setup
 
     [Application]::Init()
-    [Application]::QuitKey = 27
-    #[Key]::Esc
+    [Application]::QuitKey = 27 #Esc
+
+    #get the module version to display in the status bar
+    $Ver = (Get-Command $($MyInvocation.MyCommand)).Version.ToString()
 
     #endregion
 
@@ -198,7 +233,7 @@ Function Invoke-ServiceInfo {
         @(
             [StatusItem]::New('Unknown', $(Get-Date -Format g), {}),
             [StatusItem]::New('Unknown', 'ESC to quit', {}),
-            [StatusItem]::New('Unknown', "v$scriptVer", {}),
+            [StatusItem]::New('Unknown', "v$Ver", {}),
             [StatusItem]::New('Unknown', 'Ready', {})
         )
     )
@@ -217,14 +252,8 @@ Function Invoke-ServiceInfo {
     #this is what will be on the menu bar
     $MenuBarItem1 = [MenuBarItem]::New('_Export', @($ExportCsvMenuItem, $ExportJsonMenuItem, $ExportXmlMenuItem))
 
-    $about = @"
-$($MyInvocation.MyCommand) v$scriptVer
-PSVersion $($PSVersionTable.PSVersion)
-Terminal.Gui $TerminalGuiVersion
-NStack $NStackVersion
-"@
-    $MenuItem3 = [MenuItem]::New('A_bout', '', { [MessageBox]::Query('About', $About) })
-    $MenuItem4 = [MenuItem]::New('_Documentation', '', { [MessageBox]::Query('Help', 'To be completed') })
+    $MenuItem3 = [MenuItem]::New('A_bout', '', { ShowAbout})
+    $MenuItem4 = [MenuItem]::New('_Documentation', '', { ShowHelp })
     $MenuBarItem2 = [MenuBarItem]::New('_Help', @($MenuItem3, $MenuItem4))
 
     $MenuBar = [MenuBar]::New(@($MenuBarItem0, $MenuBarItem1, $MenuBarItem2))
@@ -243,14 +272,12 @@ NStack $NStackVersion
         X        = 10
         Y        = 2
         Width    = 35
-        Text     = $env:COMPUTERNAME
+        Text     = $Computername.ToUpper()
         TabIndex = 0
     }
 
     #make the computername always upper case
-    $txtComputer.Add_TextChanged({
-            $txtComputer.Text = $txtComputer.Text.ToString().ToUpper()
-        })
+    $txtComputer.Add_TextChanged({$txtComputer.Text = $txtComputer.Text.ToString().ToUpper()})
 
     $window.Add($txtComputer)
     #endregion
@@ -327,7 +354,6 @@ NStack $NStackVersion
     #endregion
 
     #region Add a table view to display the results
-    # https://gui-cs.github.io/Terminal.Gui/articles/tableview.html
     $TableView = [TableView]@{
         X        = 1
         Y        = 6

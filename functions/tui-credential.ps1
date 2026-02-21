@@ -1,8 +1,7 @@
-
-Function Get-TuiCredential {
+function Get-TuiCredential {
     [cmdletbinding()]
     [OutputType('PSCredential')]
-    Param(
+    param(
         [Parameter(
             Position = 0,
             HelpMessage = 'Enter the username in the format <machine>|<domain>\username'
@@ -16,7 +15,7 @@ Function Get-TuiCredential {
     [Terminal.Gui.Application]::QuitKey = 27
     $Script:New = $False
 
-    $win = $win = [Terminal.Gui.Window] @{
+    $win = [Terminal.Gui.Window] @{
         Title  = 'Get-TuiCredential'
         Width  = 45
         Height = 9
@@ -105,13 +104,13 @@ Function Get-TuiCredential {
     [Terminal.Gui.Application]::Run()
     [Terminal.Gui.Application]::ShutDown()
 
-    If ($Script:New) {
+    if ($Script:New) {
         $SecureString = ConvertTo-SecureString -String $txtPass.Text.ToString() -AsPlainText -Force
-        Try {
+        try {
             [PSCredential]::New($txtUserName.Text.ToString(), $SecureString)
         }
-        Catch {
-            Throw 'Failed to create a credential. Did you specify a username AND password?'
+        catch {
+            throw 'Failed to create a credential. Did you specify a username AND password?'
         }
     }
 

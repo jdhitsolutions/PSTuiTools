@@ -1,22 +1,27 @@
 using namespace Terminal.Gui
-Function Invoke-ProcessPeeker {
+function Invoke-ProcessPeeker {
     [cmdletbinding()]
-    [alias("ProcessPeeker")]
-    Param()
+    [alias('ProcessPeeker')]
+    param()
 
+    If ($host.name -ne 'ConsoleHost') {
+        Write-Warning 'This should be run in a PowerShell console host.'
+        Return
+    }
     #Get process information
     $AllProcesses = Get-Process -IncludeUserName |
-    Where-Object { $_.name -notMatch 'Idle|System' }
+    Where-Object { $_.name -notmatch 'Idle|System' }
+
     $ProcessHash = $AllProcesses | Group-Object -Property ID -AsHashTable -AsString
+
     $list = [System.Collections.Generic.List[object]]::New()
     $AllProcesses | Select-Object -Property @{Name = 'PID'; Expression = { $_.id.toString().PadRight(7) } }, name |
     ForEach-Object { $list.add("$($_.pid) $($_.Name)") }
 
     [Application]::Init()
-    [Application]::QuitKey = 27
-    #[Terminal.Gui.Key]::Esc
+    [Application]::QuitKey = 27  #Esc
 
-    # Create a window to add frames to
+    # Create a window to add frames
     $Window = [Window]::New()
     $Window.Title = 'Process Peeker (Esc to quit)'
     $Window.Height = [Dim]::Fill()
