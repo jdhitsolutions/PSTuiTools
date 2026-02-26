@@ -49,19 +49,28 @@ Run `Get-PSTuiTools` to see a list of available module commands including their 
 ```powershell
 PS C:\> Get-PSTuiTools
 
-   Module: PSTuiTools [v0.3.0]
+   Module: PSTuiTools [v0.4.0]
 
 Name                 Alias         Synopsis
 ----                 -----         --------
 Get-PSTuiTools                     Get Sample TUI tools.
 Get-TuiCredential                  Prompt for credentials in a TUI.
+Invoke-HelloWorld    HelloWorld    Run a Hello World demo.
 Invoke-ProcessPeeker ProcessPeeker A TUI process viewer.
+Invoke-PSTuiTools    PSTuiTools    Show module commands in a TUI
 Invoke-ServiceInfo   ServiceInfo   A TUI for displaying service information.
 Invoke-SystemStatus  TuiStatus     Run a system status TUI monitor.
 Invoke-TuiColorDemo  TuiColorDemo  Run the TUI color demo.
+Invoke-TuiMp3        tuimp3        Launch a TUI MP3 player
 Invoke-TuiTemplate   TuiTemplate   Run the TUI template script.
 Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.
 ```
+
+### [Invoke-PSTuiTools](docs\Invoke-PSTuiTools.md)
+
+As an alternative to `Get-PSTuiTools`, you can run `Invoke-PSTuiTools` to see the available commands in a TUI. You can select a command to run it and see the help description.
+
+![Invoke-PSTuiTools](images/invoke-pstuitools.png)
 
 ### [Get-TuiCredential](docs\Get-TuiCredential.md)
 
@@ -74,6 +83,14 @@ $cred = Get-TuiCredential
 ![Get-TuiCredential](images/tui-credential.png)
 
 You can pass a user name as a parameter value from the PowerShell prompt.
+
+### [Invoke-HelloWorld](docs\Invoke-Helloworld.md)
+
+Every project like this needs a *Hello World* example. This is a simple TUI that displays a label and a button. When the button is clicked, the label text will change. It will revert to the original text after 5 seconds.
+
+![Hello World](images/hello-world.png)
+
+This TUI has a PowerSell alias of `HelloWorld`.
 
 ### [Invoke-ProcessPeeker](docs\Invoke-ProcessPeeker.md)
 
@@ -92,6 +109,28 @@ This TUI will display service information from the specified computer. You can u
 This is a very complex TUI that displays a variety of system information derived from `Get-CimInstance`.
 
 ![System Status](images/systemstatus.png)
+
+This command has an alias of `TuiStatus` You can specify a computer and alternate credentials from the prompt.
+
+```powershell
+PS C:\> Get-Command Invoke-SystemStatus -Syntax
+
+Invoke-SystemStatus [[-Computername] <string>] [-Credential <pscredential>] [-WindowColor <Color>] [<CommonParameters>]
+```
+
+Or enter new credentials if you want to change the computer.
+
+The TUI includes an optional automatic refresh feature. You should set the refresh value (in seconds) first, then click the `Start Timer` button. If you use a timer and want to change the computer, you should stop the timer first, then change the computer and start the timer again.
+
+You can always refresh the information manually by clicking the `Refresh` button.
+
+### [Invoke-TuiMp3](docs\Invoke-TuiMp3.md)
+
+This function will launch a simple TUI-based MP3 player. You can specify the path to an MP3 file to play or open a file from the menu. You can set a default library folder to open to simplify navigation. Use the buttons to control playback. Selected metadata and lyrics will be displayed if found in the MP3 file.
+
+![MP3 Player](images/tuimp3-player.png)
+
+This function uses the TagLibSharp library to read MP3 metadata.
 
 ### [Invoke-TuiColorDemo](docs\Invoke-TuiColorDemo.md)
 
@@ -126,6 +165,8 @@ Depending on your project, you may have other ways to load the assemblies.
 
 The TUIs were designed using Windows Terminal on Windows 11 running a 120x35 windows size. Layout might vary on non-Windows systems.
 
+The module examples are not intended to be feature complete tools. They are written as proof-of-concepts and models for your own work. You are welcome to enhance any of the samples. For example, the MP3 player TUI could be enhanced to include a playlist, volume controls, or playback history.
+
 As you look through the code, you'll see that I am not consistent in how I write PowerShell to create the TUI. Some scripts use the `Terminal.Gui` namespace and others reference classes directly. You may also see code like this to define a TUI element:
 
 ```powershell
@@ -152,6 +193,8 @@ $lblUsername = New-Object Terminal.Gui.Label
 ```
 
 Although I don't think I am using this technique in my samples. I wanted to demonstrate different techniques, any of which are acceptable. Find one that makes the most sense to you and use it consistently in your code.
+
+> *I have no pretensions that I am an expert in creating TUIs with Terminal.Gui. There is no guarantee that my code samples are the only way, or even the best way, to accomplish a given task. I'm hoping that we can use the Discussions section of this repository to share ideas and learn from each other.*
 
 And one final word on color: How Terminal.Gui renders a color like `Green` will depend on the terminal's color scheme and possibly operating system.
 

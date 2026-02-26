@@ -4,13 +4,18 @@
 Trying to gracefully handle problems when an existing version of the Terminal.Gui
 assembly is already loaded, such as when using Out-ConsoleGridView. I am not sure
 this is the best way or if I am even doing it the right way. This code appears
-to have an impact on loading the module. I expect this code to change.
+to have an impact on loading the module. I expect this code to change. Some of this
+code was generated with AI.
 #>
 $TuiLoadContext = $null
 
 $assemblyPath = Join-Path $PSScriptRoot 'assemblies'
 $nstackDll = Join-Path $assemblyPath 'NStack.dll'
 $terminalGuiDll = Join-Path $assemblyPath 'Terminal.Gui.dll'
+$tagLibDll = Join-Path $assemblyPath .\TagLibSharp.dll
+
+[System.Reflection.Assembly]::LoadFrom($tagLibDll)
+
 # Only create custom load context if assemblies aren't already loaded
 $existingTerminalGui = [AppDomain]::CurrentDomain.GetAssemblies().Where({$_.GetName().Name -eq 'Terminal.Gui'})
 
@@ -18,11 +23,11 @@ $RequiredVersion = "1.19.0"
 
 if (-not $existingTerminalGui) {
     # Create isolated load context for Terminal.Gui assemblies
-    $TuiLoadContext = [System.Runtime.Loader.AssemblyLoadContext]::new('PSTuiTools', $true)
+   # $TuiLoadContext = [System.Runtime.Loader.AssemblyLoadContext]::new('PSTuiTools', $true)
 
-    # Load assemblies into isolated context
-    [void]$TuiLoadContext.LoadFromAssemblyPath($nstackDll)
-    [void]$TuiLoadContext.LoadFromAssemblyPath($terminalGuiDll)
+   # Load assemblies into isolated context
+   # [void]$TuiLoadContext.LoadFromAssemblyPath($nstackDll)
+   # [void]$TuiLoadContext.LoadFromAssemblyPath($terminalGuiDll)
 
     #Write-Host "Loaded Terminal.Gui assemblies in isolated context" -fore magenta
     [System.Reflection.Assembly]::LoadFrom($nStackDll)

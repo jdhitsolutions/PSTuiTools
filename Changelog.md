@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-02-26
+
+This is the first version released to the PowerShell Gallery.
+
+### Added
+
+- Added a TUI-based MP3 player, `Invoke-TuiMp3` with an alias of `tuimp3`.
+- Added `Invoke-HelloWorld` to run a basic Hello World TUI.
+- Added command `Invoke-PSTuiTools` to display information about module commands in a TUI. You can also launch TUIs from this interface.
+
+### Changed
+
+- Updated `README`.
+- Updated module description in the manifest.
+
 ## [0.3.0] - 2026-02-21
 
 ### Added
@@ -37,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of core files and functions
 
-[Unreleased]: https://github.com/jdhitsolutions/PSTuiTools/compare/v0.3.0..HEAD
+[Unreleased]: https://github.com/jdhitsolutions/PSTuiTools/compare/v0.4.0..HEAD
+[0.4.0]: https://github.com/jdhitsolutions/PSTuiTools/compare/v0.3.0..v0.4.0
 [0.3.0]:
 [0.2.0]:

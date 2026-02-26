@@ -8,7 +8,7 @@ Function Get-PSTuiTools {
         [PSCustomObject]@{
             PSTypeName = 'psTuiTool'
             Name       = $cmd
-            Alias      = (Get-Alias -Definition $cmd -ErrorAction SilentlyContinue).name
+            Alias      = (Get-Alias -Definition $cmd -ErrorAction Ignore).name
             Module     = 'PSTuiTools'
             Version    = $mod.Version
             Synopsis   = $((Get-Help $cmd).Synopsis)
