@@ -153,7 +153,7 @@ This command will run a sample TUI that uses the TreeView control. It will displ
 
 Default path is $HOME, but you can specify a folder.
 
-![tuiTreeDemo](images\tuitree-demo.png)
+![tuiTreeDemo](images/tuitree-demo.png)
 
 You can manually click in the tree to expand and collapse nodes or use the toggle button. Details from the selected tree item will be displayed in another detail tree on the right. You might see different detail information depending on the file.
 
