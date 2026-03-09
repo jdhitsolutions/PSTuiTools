@@ -48,7 +48,7 @@
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
         <dev:code>PS C:\&gt; Get-PSTuiTools
 
-   Module: PSTuiTools [v0.4.0]
+   Module: PSTuiTools [v0.5.0]
 
 Name                 Alias         Synopsis
 ----                 -----         --------
@@ -62,7 +62,8 @@ Invoke-SystemStatus  TuiStatus     Run a system status TUI monitor.
 Invoke-TuiColorDemo  TuiColorDemo  Run the TUI color demo.
 Invoke-TuiMp3        tuimp3        Launch a TUI MP3 player.
 Invoke-TuiTemplate   TuiTemplate   Run the TUI template script.
-Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.</dev:code>
+Invoke-TuiTreeDemo   tuiTree       Run a TreeView demo TUI.
+Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
         </dev:remarks>
@@ -438,7 +439,7 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.<
             <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
+          <dev:defaultValue>$env:Computername</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="RunAs">
           <maml:name>Credential</maml:name>
@@ -480,7 +481,7 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.<
             <maml:name>Color</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
+          <dev:defaultValue>BrightYellow</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
@@ -495,7 +496,7 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.<
           <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
+        <dev:defaultValue>$env:Computername</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="RunAs">
         <maml:name>Credential</maml:name>
@@ -519,7 +520,7 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.<
           <maml:name>Color</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
+        <dev:defaultValue>BrightYellow</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -535,7 +536,7 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.<
     <command:returnValues>
       <command:returnValue>
         <dev:type>
-          <maml:name>System.Object</maml:name>
+          <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -641,7 +642,12 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.<
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>This command will launch a TUI MP3 player. You can specify the path to an MP3 file to play or open a file from the menu. You can set a default library folder to open to simplify navigation. Use the buttons to control playback. Selected metadata and lyrics will be displayed if found in the MP3 file.</maml:para>
+      <maml:para>This command will launch a TUI MP3 player. You can specify the path to a .mp3 or .m4a file. This will load the file into the player. Use the buttons to control playback. Selected metadata and lyrics will be displayed if found in the MP3 file.</maml:para>
+      <maml:para>You can also open a file from the menu. The file dialog will filter on .mp3 and .m4a files. You will need to select the extension from the dropdown.</maml:para>
+      <maml:para>When you start the command, you can set a default library folder to open to simplify navigation. If this is a value you want to use all the time, add an entry into $PSDefaultParameterValues.</maml:para>
+      <maml:para>You can control the volume by clicking the volume bar, the +/- buttons, or using Ctrl+Up or Ctrl+Down.</maml:para>
+      <maml:para>Beginning with v0.5.0, the player will keep a most recently played list. As new songs are played, they will be added to the list. The maximum number of entries is 10. After that, the oldest entry is removed. The list is persisted in a file called tuiMp3-most-recent.txt under $HOME. If you uninstall the module, you will need to manually remove the file.</maml:para>
+      <maml:para>Note that there is a limitation in the file dialog. You cannot load a file if it has a comma in the name because it gets processed as an array. This is a limitation in Terminal.Gui. However, you can specify a file with commas in the name with the FilePath parameter.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -649,7 +655,7 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.<
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="Path">
           <maml:name>FilePath</maml:name>
           <maml:description>
-            <maml:para>Specify the path to an MP3 file.</maml:para>
+            <maml:para>Specify the path to .mp3 or .m4a file.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -658,10 +664,11 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.<
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Library">
           <maml:name>DefaultLibrary</maml:name>
           <maml:description>
-            <maml:para>Specify the default folder to open for MP3 files. UNC paths are supported.</maml:para>
+            <maml:para>Specify the default folder to open for .mp3 and .m4a files. You will have to manually select the appropriate extension from the drop down. UNC paths are supported.</maml:para>
+            <maml:para>Note that there is a limitation in the file dialog. You cannot load a file if it has a comma in the name because it gets processed as an array. This is a limitation in Terminal.Gui. However, you can specify a file with commas in the name with the FilePath parameter.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -680,15 +687,16 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.<
             <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
+          <dev:defaultValue>PSMusic Player</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Library">
         <maml:name>DefaultLibrary</maml:name>
         <maml:description>
-          <maml:para>Specify the default folder to open for MP3 files. UNC paths are supported.</maml:para>
+          <maml:para>Specify the default folder to open for .mp3 and .m4a files. You will have to manually select the appropriate extension from the drop down. UNC paths are supported.</maml:para>
+          <maml:para>Note that there is a limitation in the file dialog. You cannot load a file if it has a comma in the name because it gets processed as an array. This is a limitation in Terminal.Gui. However, you can specify a file with commas in the name with the FilePath parameter.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -700,7 +708,7 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.<
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="Path">
         <maml:name>FilePath</maml:name>
         <maml:description>
-          <maml:para>Specify the path to an MP3 file.</maml:para>
+          <maml:para>Specify the path to .mp3 or .m4a file.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -719,7 +727,7 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.<
           <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
+        <dev:defaultValue>PSMusic Player</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -760,7 +768,7 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.<
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
         <dev:code>PS C:\&gt; Invoke-TuiMp3 -DefaultLibrary "C:\Music"</dev:code>
         <dev:remarks>
-          <maml:para>Launch the TUI MP3 player and set the default library to the specified folder. You can then navigate to your MP3 files more easily.</maml:para>
+          <maml:para>Launch the TUI MP3 player and set the default library to the specified folder. You can then navigate to your MP3 files more easily. This parameter has an alias of Library.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -827,6 +835,125 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.<
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://jdhitsolutions.com/yourls/edd54a</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Invoke-TuiTreeDemo</command:name>
+      <command:verb>Invoke</command:verb>
+      <command:noun>TuiTreeDemo</command:noun>
+      <maml:description>
+        <maml:para>Run a TreeView demo TUI.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>This command will run a sample TUI that uses the TreeView control. It will display a specified path as a tree showing files and folders. You can control the depth. The default is 4. The more levels, the longer it will take to open the TUI, especially for large folders.</maml:para>
+      <maml:para>Default path is $HOME, but you can specify a folder.</maml:para>
+      <maml:para>You can manually click in the tree to expand and collapse nodes or use the toggle button. Details from the selected tree item will be displayed in another detail tree on the right. You might see different detail information depending on the file.</maml:para>
+      <maml:para>If you right click a file in the main tree, depending on the file extension, the contents will be displayed in a dialog box. Most text files should be displayed.</maml:para>
+      <maml:para>Enter a new path in the text field and click the Update button to show a new tree. This will use the existing depth value.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Invoke-TuiTreeDemo</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specify a filesystem path to display.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>$HOME</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Depth</maml:name>
+          <maml:description>
+            <maml:para>Specify the number of levels to display. The higher the value the longer it will take to display the tree. Specify a value between 1 and 7.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>4</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>Specify a filesystem path to display.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>$HOME</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Depth</maml:name>
+        <maml:description>
+          <maml:para>Specify the number of levels to display. The higher the value the longer it will take to display the tree. Specify a value between 1 and 7.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>4</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Learn more about PowerShell: http://jdhitsolutions.com/yourls/newsletter</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Invoke-TuiTreeDemo</dev:code>
+        <dev:remarks>
+          <maml:para>Launch the demo using default values.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; tuiTree c:\scripts -depth 2</dev:code>
+        <dev:remarks>
+          <maml:para>Open the demo using C:\Scripts and limit the display to 2 levels.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://jdhitsolutions.com/yourls/fe54a9</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>

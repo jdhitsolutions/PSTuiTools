@@ -1,5 +1,3 @@
-#requires -version 7.5
-
 using namespace Terminal.Gui
 
 #display PSTuiTools in a TUI
@@ -41,12 +39,12 @@ function Invoke-PSTuiTools {
         Y       = $y
         TabStop = $False
         Text    = @'
-Tab or use the arrow keys to navigate the list of TUIs in this module. This will update the help
-description. Pressing Enter on a command name will launch the TUI. When that TUI finishes this TUI
-will be re-shown. Click the Quit button or use the Alt+Q shortcut to quit.
+Tab or use the arrow keys to navigate the list of TUIs in this module. This will update the help description. Pressing
+Enter on a command name will launch the TUI. When that TUI finishes this TUI will be re-shown. Click the Quit button or
+use the Alt+Q shortcut to quit.
 
-The commands Get-PSTuiTools,Invoke-PSTuiTools, and Save-TuiAssembly will be skipped and not invoked
-although you will see the help description.
+The commands Get-PSTuiTools,Invoke-PSTuiTools, and Save-TuiAssembly will be skipped and not invoked although you will
+see the help synopsis.
 '@
     }
     $window.Add($note)
@@ -62,16 +60,16 @@ although you will see the help description.
         Text    = 'Command                  Alias                Synopsis'
     }
     $window.Add($header)
-    $y++
+    $Y+=2
 
     <#
     Because I am using a closure on the Enter event, I need to define the help frame
-    and description view before I create the event. At least, that seems to be how
+    and description view *before* I create the event. At least, that seems to be how
     this works.
     #>
     $helpFrame = [FrameView]@{
         x       = 2
-        Y       = $header.Frame.Bottom + $tools.count + 1#20
+        Y       = $header.Frame.Bottom + $tools.count + 2
         Width   = [dim]::Percent(85)
         Height  = 7
         TabStop = $False
@@ -99,7 +97,7 @@ although you will see the help description.
     foreach ($tool in $tools) {
         $varName = "lbl_$($tool.Name)"
         Set-Variable -Name $varName -Value ([Label]@{
-                X        = $x
+                X        = $X
                 Y        = $Y
                 TabStop  = $true
                 TabIndex = $tab

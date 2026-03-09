@@ -14,7 +14,9 @@ You can install the module from the PowerShell Gallery:
 Install-PSResource PSTuiTools
 ```
 
-The module requires a PowerShell 7. Some of the TUI examples will work cross-platform. If there is a restriction, you will get a warning.
+The module requires a PowerShell 7. Some of the TUI examples will work cross-platform. If there is a platform restriction, you will get a warning.
+
+> *Installation will include the required third-party assemblies.*
 
 ## Terminal.Gui
 
@@ -28,7 +30,7 @@ This version was selected because it is the most recent stable release, although
 
 Version 2 of Terminal.Gui is currently in development. The core features are supposedly set, but the current release is only at the alpha stage. I am hesitant to create TUI samples that might break with new pre-releases. There are significant changes in v2. When it is officially released, the plan is to update this module to use the latest stable version.
 
-If you want to create TUIs using version 2, you can find reference documentation at [https://gui-cs.github.io/Terminal.Gui/](https://gui-cs.github.io/Terminal.Gui/). One feature I am looking forward to is removing the dependency on NStack.
+If you want to create TUIs using version 2, you can find reference documentation at [https://gui-cs.github.io/Terminal.Gui/](https://gui-cs.github.io/Terminal.Gui/). One feature I am looking forward to is removing the NStack dependency.
 
 ### Potential Assembly Conflicts
 
@@ -49,7 +51,7 @@ Run `Get-PSTuiTools` to see a list of available module commands including their 
 ```powershell
 PS C:\> Get-PSTuiTools
 
-   Module: PSTuiTools [v0.4.0]
+   Module: PSTuiTools [v0.5.0]
 
 Name                 Alias         Synopsis
 ----                 -----         --------
@@ -61,8 +63,9 @@ Invoke-PSTuiTools    PSTuiTools    Show module commands in a TUI
 Invoke-ServiceInfo   ServiceInfo   A TUI for displaying service information.
 Invoke-SystemStatus  TuiStatus     Run a system status TUI monitor.
 Invoke-TuiColorDemo  TuiColorDemo  Run the TUI color demo.
-Invoke-TuiMp3        tuimp3        Launch a TUI MP3 player
+Invoke-TuiMp3        tuimp3        Launch a TUI MP3 player.
 Invoke-TuiTemplate   TuiTemplate   Run the TUI template script.
+Invoke-TuiTreeDemo   tuiTree       Run a TreeView demo TUI.
 Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.
 ```
 
@@ -71,6 +74,14 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.
 As an alternative to `Get-PSTuiTools`, you can run `Invoke-PSTuiTools` to see the available commands in a TUI. You can select a command to run it and see the help description.
 
 ![Invoke-PSTuiTools](images/invoke-pstuitools.png)
+
+### [Invoke-HelloWorld](docs\Invoke-Helloworld.md)
+
+Every project like this needs a *Hello World* example. This is a simple TUI that displays a label and a button. When the button is clicked, the label text will change. It will revert to the original text after 5 seconds.
+
+![Hello World](images/hello-world.png)
+
+This TUI has a PowerSell alias of `HelloWorld`.
 
 ### [Get-TuiCredential](docs\Get-TuiCredential.md)
 
@@ -83,14 +94,6 @@ $cred = Get-TuiCredential
 ![Get-TuiCredential](images/tui-credential.png)
 
 You can pass a user name as a parameter value from the PowerShell prompt.
-
-### [Invoke-HelloWorld](docs\Invoke-Helloworld.md)
-
-Every project like this needs a *Hello World* example. This is a simple TUI that displays a label and a button. When the button is clicked, the label text will change. It will revert to the original text after 5 seconds.
-
-![Hello World](images/hello-world.png)
-
-This TUI has a PowerSell alias of `HelloWorld`.
 
 ### [Invoke-ProcessPeeker](docs\Invoke-ProcessPeeker.md)
 
@@ -126,17 +129,37 @@ You can always refresh the information manually by clicking the `Refresh` button
 
 ### [Invoke-TuiMp3](docs\Invoke-TuiMp3.md)
 
-This function will launch a simple TUI-based MP3 player. You can specify the path to an MP3 file to play or open a file from the menu. You can set a default library folder to open to simplify navigation. Use the buttons to control playback. Selected metadata and lyrics will be displayed if found in the MP3 file.
+This function will launch a simple TUI-based audio player. You can specify the path to a `.mp3` or `.m4a` file to play, or open a file from the menu. You can set a default library folder to open to simplify navigation. Use the buttons to control playback. Selected metadata and lyrics will be displayed if found in the MP3 file.
 
 ![MP3 Player](images/tuimp3-player.png)
 
-This function uses the TagLibSharp library to read MP3 metadata.
+You can control the volume by clicking the volume bar, the +/- buttons, or using Ctrl+Up or Ctrl+Down.
+
+Beginning with v0.5.0, the player will keep a most recently played list. As new songs are played, they will be added to the list. The maximum number of entries is 10. After that, the oldest entry is removed. The list is persisted in a file called `tuiMp3-most-recent.txt` under `$HOME`. If you uninstall the module, you will need to manually remove the file.
+
+Note that there is a limitation in the file dialog. You cannot load a file if it has a comma in the name because it gets processed as an array. This is a limitation in Terminal.Gui. However, you can specify a file with commas in the name with the `FilePath` parameter when launching the TUI Mp3 player.
+
+This function uses the TagLibSharp library to read audio media metadata.
 
 ### [Invoke-TuiColorDemo](docs\Invoke-TuiColorDemo.md)
 
 You can use this TUI to experiment with different color combinations. The TUI will dynamically update sample code which you should be able to copy and paste into your project.
 
 ![Tui Color Demo](images/colordemo.png)
+
+### [Invoke-TuiTreeDemo](docs\Invoke-TuiTreeDemo.md)
+
+This command will run a sample TUI that uses the TreeView control. It will display a specified path as a tree showing files and folders. You can control the depth. The default is 4. The more levels, the longer it will take to open the TUI, especially for large folders.
+
+Default path is $HOME, but you can specify a folder.
+
+![tuiTreeDemo](images\tuitree-demo.png)
+
+You can manually click in the tree to expand and collapse nodes or use the toggle button. Details from the selected tree item will be displayed in another detail tree on the right. You might see different detail information depending on the file.
+
+If you right click a file in the main tree, depending on the file extension, the contents will be displayed in a dialog box. Most text files should be displayed.
+
+Enter a new path in the text field and click the Update button to show a new tree. This will use the existing depth value.
 
 ### [Invoke-TuiTemplate](docs\Invoke-TuiTemplate.md)
 

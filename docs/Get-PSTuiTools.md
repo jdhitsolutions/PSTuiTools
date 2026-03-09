@@ -28,7 +28,7 @@ Get the sample TUI tools from the PSTuiTools module.
 ```powershell
 PS C:\> Get-PSTuiTools
 
-   Module: PSTuiTools [v0.4.0]
+   Module: PSTuiTools [v0.5.0]
 
 Name                 Alias         Synopsis
 ----                 -----         --------
@@ -42,7 +42,8 @@ Invoke-SystemStatus  TuiStatus     Run a system status TUI monitor.
 Invoke-TuiColorDemo  TuiColorDemo  Run the TUI color demo.
 Invoke-TuiMp3        tuimp3        Launch a TUI MP3 player.
 Invoke-TuiTemplate   TuiTemplate   Run the TUI template script.
-Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.
+Invoke-TuiTreeDemo   tuiTree       Run a TreeView demo TUI.
+Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies
 ```
 
 ## PARAMETERS

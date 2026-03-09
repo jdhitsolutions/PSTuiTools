@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-03-09
+
+### Added
+
+- Added function `Invoke-TuiTreeDemo` with an alias of `tuiTree` to show a TreeView example TUI.
+
+### Changed
+
+- Changed text displays in system status TUI to match the window color.
+- Revised layout in the system status TUI to give controls a little more space.
+- Minor layout changes to `Invoke-PSTuiTools`.
+- Updated module manifest with private data.
+- Added volume control to the TUI Mp3 player.
+- Changed the default title in `Invoke-TuiMp3` to `PSMusic Player`.
+- Updated TUI documentation in `Invoke-TuiMp3`.
+- Updated `Invoke-TuiMp3` to support loading .m4a files.
+- Added a most recently played feature to the MP3 player TUI.
+- Updated the code that opens the file dialog to display a message about the limitation opening files with commas in the name.
+- Updated `README`.
+
+### Fixed
+
+- Updated Tui MP3 player to reset progress bar when opening a new file.
+- Updated `Invoke-TuiMp3` to fix a problem playing files with non-standard characters in the file name or path.
+- Fixed a bug in the MP3 TUI trying to play a file without loading one first.
+- Fixed a bug in how lyrics are displayed in the MP3 player TUI.
+
 ## [0.4.1] - 2026-02-26
 
 ### Changed
@@ -56,7 +83,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of core files and functions
 
-[Unreleased]: https://github.com/jdhitsolutions/PSTuiTools/compare/v0.4.1..HEAD
+[Unreleased]: https://github.com/jdhitsolutions/PSTuiTools/compare/v0.5.0..HEAD
+[0.5.0]: https://github.com/jdhitsolutions/PSTuiTools/compare/v0.4.1..v0.5.0
 [0.4.1]: https://github.com/jdhitsolutions/PSTuiTools/compare/v0.4.0..v0.4.1
 [0.4.0]: https://github.com/jdhitsolutions/PSTuiTools/compare/v0.3.0..v0.4.0
 [0.3.0]:

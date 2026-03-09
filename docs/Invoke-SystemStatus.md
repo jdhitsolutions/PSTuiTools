@@ -57,7 +57,7 @@ Aliases: CN
 
 Required: False
 Position: 0
-Default value: None
+Default value: $env:Computername
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -90,7 +90,7 @@ Accepted values: Black, Blue, Green, Cyan, Red, Magenta, Brown, Gray, DarkGray, 
 
 Required: False
 Position: Named
-Default value: None
+Default value: BrightYellow
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -105,7 +105,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### System.Object
+### None
 
 ## NOTES
 

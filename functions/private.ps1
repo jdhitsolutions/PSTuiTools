@@ -81,9 +81,9 @@ Function ShowMp3About {
 Function OpenFile {
     [CmdletBinding(  )]
     Param(
-        [string]$Title ="Open File",
+        [string]$Title ="Select a file",
         #specify the allowed file types
-        [string]$Filter = ".*",
+        [string[]]$Filter = ".*",
         #specify the starting folder
         [string]$Path = $Home,
         [Switch]$MultiSelect
@@ -93,6 +93,7 @@ Function OpenFile {
     $Dialog.CanChooseDirectories = $false
     $Dialog.CanChooseFiles = $true
     $Dialog.AllowsMultipleSelection = $MultiSelect
+    $Dialog.message = "You cannot select a file that has a comma in the name with this dialog box."
 
     $Dialog.DirectoryPath = $Path
     $Dialog.AllowedFileTypes = @($Filter)

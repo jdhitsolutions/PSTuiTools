@@ -225,7 +225,6 @@ terminal's color scheme. Use the arrow keys to select different colors.
         })
     $comboBack.add_KeyPress({
         param($e)
-        #$comboBack.SelectedItem = -1
         switch ($e.KeyEvent.Key) {
             'CursorDown' {
                 #if at the bottom of the list start at the top

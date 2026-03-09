@@ -14,7 +14,7 @@ Download Terminal.GUI and NStack assemblies.
 ## SYNTAX
 
 ```yaml
-Save-TuiAssembly [[-Package] <String[]>] -DestinationPath <String>  [<CommonParameters>]
+Save-TuiAssembly [[-Package] <String[]>] -DestinationPath <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION

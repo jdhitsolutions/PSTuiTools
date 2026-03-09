@@ -175,7 +175,7 @@ $($script:hardware)
 $($script:os.OSArchitecture)
 "@
 
-            $n = [Terminal.Gui.Attribute]::new('BrightGreen', 'Black')
+            $n = [Terminal.Gui.Attribute]::new($WindowColor, 'Black')
             $cs = [ColorScheme]::new()
             $cs.normal = $n
             $cs.Disabled = $n
@@ -310,29 +310,27 @@ $($script:os.OSArchitecture)
 
     #region computername
     $lblCN = [Label]@{
-        X    = 1
+        X    = 3
         Y    = 1
         Text = 'Computername:'
     }
     $window.Add($lblCN)
 
     $txtCN = [TextField]@{
-        X     = $lblCN.Frame.Width + 2
+        X     = $lblCN.Frame.Width + 4
         Y     = 1
         Width = 20
         Text  = $Computername.ToUpper()
     }
 
-    $txtCN.Add_TextChanged({
-            $txtCN.Text = $txtCN.Text.ToUpper()
-        })
+    $txtCN.Add_TextChanged({$txtCN.Text = $txtCN.Text.ToUpper()})
 
     $window.Add($txtCN)
     #endregion
 
     #region alternate credentials
     $CredentialFrame = [FrameView]@{
-        X      = 1
+        X      = 3
         Y      = 2
         width  = 35
         Height = 4
@@ -372,7 +370,7 @@ $($script:os.OSArchitecture)
 
     #region info view
     $tvInfo = [TextView]@{
-        X        = $CredentialFrame.Frame.Width + 2
+        X        = $CredentialFrame.Frame.Width + 5
         Y        = 0
         Height   = 5
         Width    = 50
@@ -382,18 +380,19 @@ $($script:os.OSArchitecture)
         Text     = ''
     }
 
-    #set the info text to Green
-    $n = [Terminal.Gui.Attribute]::new('Green', 'Black')
+    #9 March 2026 set the info text to match Window color
+    $n = [Terminal.Gui.Attribute]::new($WindowColor, 'Black')
     $cs = [ColorScheme]::new()
     $cs.normal = $n
+    $cs.Focus = $n
     $tvInfo.ColorScheme = $cs
     $window.Add($tvInfo)
     #endregion
 
     #region run info
     $runFrame = [FrameView]@{
-        X      = 1
-        Y      = $Credential.Frame.Height + 6
+        X      = 3
+        Y      = $Credential.Frame.Height + 7
         Width  = 35
         Height = 7
         Title  = 'ℹ  Run Information'
@@ -417,8 +416,8 @@ $($script:os.OSArchitecture)
 
     #region process info
     $procFrame = [FrameView]@{
-        X        = 1
-        Y        = $runFrame.Frame.Height + 6
+        X        = 3
+        Y        = $runFrame.Frame.Bottom + 2
         Width    = 60
         Height   = 15
         AutoSize = $True
@@ -449,9 +448,9 @@ $($script:os.OSArchitecture)
 
     #region physical info
     $physFrame = [FrameView]@{
-        X      = $procFrame.Frame.Width + 2
+        X      = $procFrame.Frame.Right+ 5
         Y      = $runFrame.Y - 3
-        Width  = 52
+        Width  = [Dim]::Percent(48)
         Height = 15
         Title  = '🌟Physical Information'
     }
@@ -472,7 +471,7 @@ $($script:os.OSArchitecture)
         ProgressBarFormat = 'simple'
         #Blocks, Continuous, MarqueeBlocks, MarqueeContinuous""
         ProgressBarStyle  = 'continuous'
-        Width             = $physFrame.Frame.width - 5
+        Width             = [Dim]::Percent(95)
     }
     $n = [Terminal.Gui.Attribute]::new('red', 'green')
     $cs = [ColorScheme]::new()
@@ -481,7 +480,7 @@ $($script:os.OSArchitecture)
     $physFrame.Add($progC)
 
     $lblUsed = [Label]@{
-        X    = 5 #$progC.X + 1
+        X    = 5
         Y    = $progC.y + 1
         Text = 'Used: {0}GB          Free: {1}GB' -f 0, 0
     }
@@ -503,7 +502,7 @@ $($script:os.OSArchitecture)
         ProgressBarFormat = 'simple'
         #Blocks, Continuous, MarqueeBlocks, MarqueeContinuous""
         ProgressBarStyle  = 'continuous'
-        Width             = $physFrame.Frame.width - 5
+        Width             = [Dim]::Percent(95)
     }
     $n = [Terminal.Gui.Attribute]::new('red', 'green')
     $cs = [ColorScheme]::new()
@@ -534,7 +533,7 @@ $($script:os.OSArchitecture)
         ProgressBarFormat = 'simple'
         #Blocks, Continuous, MarqueeBlocks, MarqueeContinuous""
         ProgressBarStyle  = 'continuous'
-        Width             = $physFrame.Frame.width - 5
+        Width             = [Dim]::Percent(95)
     }
     $n = [Terminal.Gui.Attribute]::new('red', 'green')
     $cs = [ColorScheme]::new()
@@ -574,16 +573,23 @@ $($script:os.OSArchitecture)
 
 
 
-                Click to show help
+                     Click to show help
 '@
     $txtHelp = [TextView]@{
-        X        = $procFrame.Frame.Right + 1
+        X        = $physFrame.Frame.Left
         Y        = $physFrame.Frame.Bottom
         Width    = [Dim]::Percent(80)
         Height   = 14
         ReadOnly = $True
         Text     = $usage
     }
+
+    #9 March 2026 Set the help text color to match the window color
+    $n = [Terminal.Gui.Attribute]::new($WindowColor, 'Black')
+    $cs = [ColorScheme]::new()
+    $cs.Normal = $n
+    $cs.Disabled = $n
+    $txtHelp.ColorScheme = $cs
     $script:showUsage = $True
     $window.Add($txtHelp)
 
@@ -603,8 +609,8 @@ $($script:os.OSArchitecture)
 
     #region buttons
     $btnRefresh = [Button]@{
-        X        = 1
-        Y        = 30
+        X        = $procFrame.Frame.Left + 1
+        Y        = $procFrame.Frame.Bottom + 2
         Text     = 'Refresh'
         TabIndex = 0
     }
@@ -621,8 +627,8 @@ $($script:os.OSArchitecture)
     $window.Add($btnRefresh)
 
     $btnQuit = [Button]@{
-        X        = $btnRefresh.Frame.Width + 2
-        Y        = 30
+        X        = $btnRefresh.Frame.Right + 1
+        Y        = $btnRefresh.Y
         Text     = '_Quit'
         TabIndex = 1
     }
@@ -635,7 +641,7 @@ $($script:os.OSArchitecture)
 
     #region timer controls
     $lblInterval = [Label]@{
-        X    = $runFrame.Frame.Width + 2
+        X    = $runFrame.Frame.Width + 5
         Y    = $runFrame.Frame.Top - 1
         Text = 'Auto refresh (sec):'
     }
