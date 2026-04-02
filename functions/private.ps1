@@ -100,7 +100,10 @@ Function OpenFile {
     [Terminal.Gui.Application]::Run($Dialog)
     If (-Not $Dialog.Canceled -AND $dialog.FilePath.ToString()) {
         #return the path of the selected file
+        $global:lastOpenMP3Folder = $Dialog.DirectoryPath.ToString()
+
         $dialog.FilePath.ToString()
     }
+
     Write-Verbose "[$((Get-Date).TimeOfDay) PRIVATE] Starting $($MyInvocation.MyCommand)"
 }

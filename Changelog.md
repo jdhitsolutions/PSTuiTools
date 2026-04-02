@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-04-02
+
+### Added
+
+- Added alias `tuicred` for `Get-TuiCredential`.
+- Added `Invoke-TuiGraphDemo` with an alias of `tuiGraph` to demonstrate using graphs.
+
+### Changed
+
+- Updated the TUI MP3 player to allow the user to set the foreground and background.
+- Adjusted tree detail frame width in `Invoke-TuiTreeDemo`.
+- Adjusted layout of the system status TUI.
+- Adjusted position of the lyrics text view in the TUI MP3 player.
+- Updated MP3 TUI to use the last opened folder in the Open File dialog.
+- Updated MP3 TUI code so that the most recently played items are displayed from newest to oldest.
+- Removed code to reset data displays on refreshes in the system status TUI. This should prevent 'blinking'.
+- Revised root module to use an engine event to clean up on module removal or exit.
+- Revised the instruction text in `Invoke-SystemStatus`.
+- Updated project's `README`.
+
+### Fixed
+
+- Fixed bug in `Invoke-SystemStatus` that was clearing credential when it might be needed for automatic refreshes.
+
 ## [0.5.0] - 2026-03-09
 
 ### Added
@@ -83,7 +107,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of core files and functions
 
-[Unreleased]: https://github.com/jdhitsolutions/PSTuiTools/compare/v0.5.0..HEAD
+[Unreleased]: https://github.com/jdhitsolutions/PSTuiTools/compare/v0.6.0..HEAD
+[0.6.0]: https://github.com/jdhitsolutions/PSTuiTools/compare/v0.5.0..v0.6.0
 [0.5.0]: https://github.com/jdhitsolutions/PSTuiTools/compare/v0.4.1..v0.5.0
 [0.4.1]: https://github.com/jdhitsolutions/PSTuiTools/compare/v0.4.0..v0.4.1
 [0.4.0]: https://github.com/jdhitsolutions/PSTuiTools/compare/v0.3.0..v0.4.0

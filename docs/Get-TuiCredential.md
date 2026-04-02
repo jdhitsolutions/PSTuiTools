@@ -19,7 +19,7 @@ Get-TuiCredential [[-Username] <String>] [<CommonParameters>]
 
 ## DESCRIPTION
 
-This is an alternative to Get-Credential that prompts for credentials in a TUI. Use Show to display the password in plaintext in the TUI. The output will be a PSCredential object.
+This is an alternative to Get-Credential that prompts for credentials in a TUI. Click the Show button to toggle the password in plaintext in the TUI. The output of this command will be a PSCredential object.
 
 ## EXAMPLES
 
@@ -29,7 +29,15 @@ This is an alternative to Get-Credential that prompts for credentials in a TUI. 
 PS C:\> $cred = Get-TuiCredential
 ```
 
-This will prompt for credentials in a TUI. Use Show to display the password in plaintext in the TUI.The output will be a PSCredential object.
+This will prompt for credentials in a TUI.
+
+### Example 2
+
+```powershell
+PS C:\> $cred = Get-TuiCredential company\artd
+```
+
+Prompt for credentials for the user company\artd.
 
 ## PARAMETERS
 
@@ -63,6 +71,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
+This command has an alias of tuicred.
+
 Learn more about PowerShell: http://jdhitsolutions.com/yourls/newsletter
 
 ## RELATED LINKS
+
+[Get-Credential]()

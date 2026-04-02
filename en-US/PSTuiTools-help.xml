@@ -6,7 +6,7 @@
       <command:verb>Get</command:verb>
       <command:noun>PSTuiTools</command:noun>
       <maml:description>
-        <maml:para>Get Sample TUI tools.</maml:para>
+        <maml:para>Get sample TUI tools.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -48,22 +48,23 @@
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
         <dev:code>PS C:\&gt; Get-PSTuiTools
 
-   Module: PSTuiTools [v0.5.0]
+   Module: PSTuiTools [v0.6.0]
 
 Name                 Alias         Synopsis
 ----                 -----         --------
-Get-PSTuiTools                     Get Sample TUI tools.
-Get-TuiCredential                  Prompt for credentials in a TUI.
-Invoke-HelloWorld    HelloWorld    Run a Hello World demo.
+Get-PSTuiTools                     Get sample TUI tools.
+Get-TuiCredential    tuicred       Prompt for credentials in a TUI.
+Invoke-HelloWorld    HelloWorld    Run a "Hello World" demo.
 Invoke-ProcessPeeker ProcessPeeker A TUI process viewer.
 Invoke-PSTuiTools    PSTuiTools    Show module commands in a TUI
 Invoke-ServiceInfo   ServiceInfo   A TUI for displaying service information.
 Invoke-SystemStatus  TuiStatus     Run a system status TUI monitor.
 Invoke-TuiColorDemo  TuiColorDemo  Run the TUI color demo.
+Invoke-TuiGraphDemo  tuiGraph      Run a demo TUI graph.
 Invoke-TuiMp3        tuimp3        Launch a TUI MP3 player.
 Invoke-TuiTemplate   TuiTemplate   Run the TUI template script.
 Invoke-TuiTreeDemo   tuiTree       Run a TreeView demo TUI.
-Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies</dev:code>
+Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
         </dev:remarks>
@@ -78,10 +79,6 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies</
         <maml:linkText>Invoke-PSTuiTools</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>https://github.com/jdhitsolutions/PSTuiTools</maml:linkText>
-        <maml:uri>https://github.com/jdhitsolutions/PSTuiTools</maml:uri>
-      </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
@@ -94,7 +91,7 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies</
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>This is an alternative to Get-Credential that prompts for credentials in a TUI. Use Show to display the password in plaintext in the TUI. The output will be a PSCredential object.</maml:para>
+      <maml:para>This is an alternative to Get-Credential that prompts for credentials in a TUI. Click the Show button to toggle the password in plaintext in the TUI. The output of this command will be a PSCredential object.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -149,6 +146,7 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies</
     </command:returnValues>
     <maml:alertSet>
       <maml:alert>
+        <maml:para>This command has an alias of tuicred.</maml:para>
         <maml:para>Learn more about PowerShell: http://jdhitsolutions.com/yourls/newsletter</maml:para>
       </maml:alert>
     </maml:alertSet>
@@ -157,7 +155,14 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies</
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
         <dev:code>PS C:\&gt; $cred = Get-TuiCredential</dev:code>
         <dev:remarks>
-          <maml:para>This will prompt for credentials in a TUI. Use Show to display the password in plaintext in the TUI.The output will be a PSCredential object.</maml:para>
+          <maml:para>This will prompt for credentials in a TUI.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; $cred = Get-TuiCredential company\artd</dev:code>
+        <dev:remarks>
+          <maml:para>Prompt for credentials for the user company\artd.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -165,6 +170,10 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies</
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://jdhitsolutions.com/yourls/0f96c5</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Credential</maml:linkText>
+        <maml:uri></maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
@@ -174,7 +183,7 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies</
       <command:verb>Invoke</command:verb>
       <command:noun>HelloWorld</command:noun>
       <maml:description>
-        <maml:para>Run a Hello World demo.</maml:para>
+        <maml:para>Run a "Hello World" demo.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -634,6 +643,65 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies</
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Invoke-TuiGraphDemo</command:name>
+      <command:verb>Invoke</command:verb>
+      <command:noun>TuiGraphDemo</command:noun>
+      <maml:description>
+        <maml:para>Run a demo TUI graph.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>This command will launch a demonstration TUI that uses the graphing feature to display a hypothetical bar chart showing usage percentages from a variety of file extensions.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Invoke-TuiGraphDemo</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Learn more about PowerShell: http://jdhitsolutions.com/yourls/newsletter</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Invoke-TuiGraphDemo</dev:code>
+        <dev:remarks>
+          <maml:para>You can also use the tuiGraph alias.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://jdhitsolutions.com/yourls/75fb8e</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Invoke-TuiMp3</command:name>
       <command:verb>Invoke</command:verb>
       <command:noun>TuiMp3</command:noun>
@@ -689,6 +757,30 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies</
           </dev:type>
           <dev:defaultValue>PSMusic Player</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="bg">
+          <maml:name>Background</maml:name>
+          <maml:description>
+            <maml:para>Specify the TUI background color. Use tab-completion to see all possible values.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Color</command:parameterValue>
+          <dev:type>
+            <maml:name>Color</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="fg">
+          <maml:name>Foreground</maml:name>
+          <maml:description>
+            <maml:para>Specify the TUI foreground color. Use tab-completion to see all possible values.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Color</command:parameterValue>
+          <dev:type>
+            <maml:name>Color</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -729,6 +821,30 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies</
         </dev:type>
         <dev:defaultValue>PSMusic Player</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="bg">
+        <maml:name>Background</maml:name>
+        <maml:description>
+          <maml:para>Specify the TUI background color. Use tab-completion to see all possible values.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Color</command:parameterValue>
+        <dev:type>
+          <maml:name>Color</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="fg">
+        <maml:name>Foreground</maml:name>
+        <maml:description>
+          <maml:para>Specify the TUI foreground color. Use tab-completion to see all possible values.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Color</command:parameterValue>
+        <dev:type>
+          <maml:name>Color</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
     </command:parameters>
     <command:inputTypes>
       <command:inputType>
@@ -766,9 +882,9 @@ Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies</
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Invoke-TuiMp3 -DefaultLibrary "C:\Music"</dev:code>
+        <dev:code>PS C:\&gt; Invoke-TuiMp3 -DefaultLibrary "C:\Music" -Background Black -Foreground BrightGreen</dev:code>
         <dev:remarks>
-          <maml:para>Launch the TUI MP3 player and set the default library to the specified folder. You can then navigate to your MP3 files more easily. This parameter has an alias of Library.</maml:para>
+          <maml:para>Launch the TUI MP3 player and set the default library to the specified folder. You can then navigate to your MP3 files more easily. This parameter has an alias of Library. The example will also create a TUI with a black background and green text.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

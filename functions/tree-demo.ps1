@@ -69,6 +69,7 @@ function Invoke-TuiTreeDemo {
             }
             if ($item.PSIsContainer) {
                 # If it's a directory, add children
+                #suppress AccessDenied errors
                 $children = Get-ChildItem -LiteralPath $Path -ErrorAction SilentlyContinue
                 foreach ($child in $children) {
                     $childNode = New-DirectoryTree -Path $child.FullName -MaxDepth $Depth -CurrentDepth ($CurrentDepth + 1)
@@ -106,7 +107,7 @@ function Invoke-TuiTreeDemo {
             $node.Children.Add((_node "Root Files      $($item.GetFiles().count)"))
             $node.Children.Add((_node "Root Folders    $($item.GetDirectories().count)"))
             #get total size
-            $sz = $item.EnumerateFiles('*', 'AllDirectories') | measure length -Sum
+            $sz = $item.EnumerateFiles('*', 'AllDirectories') | Measure-Object length -Sum
             $node.Children.Add((_node "Total File      $($sz.Count)"))
             $node.Children.Add((_node "Total Size      $($sz.Sum)"))
             if ($sz.sum -ge 1MB) {
@@ -327,7 +328,7 @@ function Invoke-TuiTreeDemo {
         X      = $txtPath.Frame.Right + 6
         Y      = $btnQuit.Frame.Y
         Title  = 'Selected Details'
-        Width  = [Dim]::Percent(55)
+        Width  = [Dim]::Percent(50)
         Height = [Dim]::Percent(90)
     }
 

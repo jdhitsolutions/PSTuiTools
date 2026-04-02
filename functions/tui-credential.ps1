@@ -1,6 +1,7 @@
 function Get-TuiCredential {
     [cmdletbinding()]
     [OutputType('PSCredential')]
+    [alias("tuicred")]
     param(
         [Parameter(
             Position = 0,

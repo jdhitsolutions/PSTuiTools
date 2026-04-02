@@ -51,18 +51,19 @@ Run `Get-PSTuiTools` to see a list of available module commands including their 
 ```powershell
 PS C:\> Get-PSTuiTools
 
-   Module: PSTuiTools [v0.5.0]
+   Module: PSTuiTools [v0.6.0]
 
 Name                 Alias         Synopsis
 ----                 -----         --------
-Get-PSTuiTools                     Get Sample TUI tools.
-Get-TuiCredential                  Prompt for credentials in a TUI.
-Invoke-HelloWorld    HelloWorld    Run a Hello World demo.
+Get-PSTuiTools                     Get sample TUI tools.
+Get-TuiCredential    tuicred       Prompt for credentials in a TUI.
+Invoke-HelloWorld    HelloWorld    Run a "Hello World" demo.
 Invoke-ProcessPeeker ProcessPeeker A TUI process viewer.
 Invoke-PSTuiTools    PSTuiTools    Show module commands in a TUI
 Invoke-ServiceInfo   ServiceInfo   A TUI for displaying service information.
 Invoke-SystemStatus  TuiStatus     Run a system status TUI monitor.
 Invoke-TuiColorDemo  TuiColorDemo  Run the TUI color demo.
+Invoke-TuiGraphDemo  tuiGraph      Run a demo TUI graph.
 Invoke-TuiMp3        tuimp3        Launch a TUI MP3 player.
 Invoke-TuiTemplate   TuiTemplate   Run the TUI template script.
 Invoke-TuiTreeDemo   tuiTree       Run a TreeView demo TUI.
@@ -94,6 +95,8 @@ $cred = Get-TuiCredential
 ![Get-TuiCredential](images/tui-credential.png)
 
 You can pass a user name as a parameter value from the PowerShell prompt.
+
+This command has an alias of `tuicred`.
 
 ### [Invoke-ProcessPeeker](docs\Invoke-ProcessPeeker.md)
 
@@ -137,6 +140,8 @@ You can control the volume by clicking the volume bar, the +/- buttons, or using
 
 Beginning with v0.5.0, the player will keep a most recently played list. As new songs are played, they will be added to the list. The maximum number of entries is 10. After that, the oldest entry is removed. The list is persisted in a file called `tuiMp3-most-recent.txt` under `$HOME`. If you uninstall the module, you will need to manually remove the file.
 
+Version 0.6.0 and later of the module allow you to set the TUI foreground and background colors. Use tab-completion to see the possible color values.
+
 Note that there is a limitation in the file dialog. You cannot load a file if it has a comma in the name because it gets processed as an array. This is a limitation in Terminal.Gui. However, you can specify a file with commas in the name with the `FilePath` parameter when launching the TUI Mp3 player.
 
 This function uses the TagLibSharp library to read audio media metadata.
@@ -160,6 +165,12 @@ You can manually click in the tree to expand and collapse nodes or use the toggl
 If you right click a file in the main tree, depending on the file extension, the contents will be displayed in a dialog box. Most text files should be displayed.
 
 Enter a new path in the text field and click the Update button to show a new tree. This will use the existing depth value.
+
+### [Invoke-TuiGraph](docs\Invoke-TuiGraph.md)
+
+This command will launch a demonstration TUI that uses the graphing feature to display a hypothetical bar chart showing usage percentages from a variety of file extensions.
+
+![Tui Graph](images/tui-graph.png)
 
 ### [Invoke-TuiTemplate](docs\Invoke-TuiTemplate.md)
 
@@ -219,7 +230,7 @@ Although I don't think I am using this technique in my samples. I wanted to demo
 
 > *I have no pretensions that I am an expert in creating TUIs with Terminal.Gui. There is no guarantee that my code samples are the only way, or even the best way, to accomplish a given task. I'm hoping that we can use the Discussions section of this repository to share ideas and learn from each other.*
 
-And one final word on color: How Terminal.Gui renders a color like `Green` will depend on the terminal's color scheme and possibly operating system.
+And one final word on color: How Terminal.Gui renders a color like `Green` will depend on the terminal's color scheme and possibly the operating system.
 
 ## Notes
 

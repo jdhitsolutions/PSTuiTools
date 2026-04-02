@@ -28,6 +28,7 @@ function Invoke-SystemStatus {
         Write-Warning 'This should be run in a PowerShell console host.'
         Return
     }
+
     #region initialize
     #define the main Window title here
     $windowTitle = 'System Status Report'
@@ -39,7 +40,7 @@ function Invoke-SystemStatus {
     $info = 'ℹ'
     $disk = '💽'
 
-    #helper functions
+    #region helper functions
     function ConvertTo-DataTable {
         [cmdletbinding()]
         [OutputType('System.Data.DataTable')]
@@ -87,10 +88,13 @@ function Invoke-SystemStatus {
 
     } #close ConvertTo-DataTable
     function GetData {
-        param()
+        param(
+            [string]$Computername,
+            [PSCredential]$Credential
+        )
 
         $splat = @{
-            Computername = $txtCN.Text.ToString()
+            Computername = $Computername
             ErrorAction  = 'Stop'
         }
         if ($credential) {
@@ -137,12 +141,15 @@ function Invoke-SystemStatus {
         }
 
         #clear credentials
-        if ($txtUser.Text.Length -gt 0) {
-            $txtUser.Text = ''
-        }
-        if ($txtPass.Text.Length -gt 0) {
-            $txtPass.Text = ''
-        }
+        # 11 March 2026 Don't clear credentials because they might be needed on a refresh
+        <#
+            if ($txtUser.Text.Length -gt 0) {
+                $txtUser.Text = ''
+            }
+            if ($txtPass.Text.Length -gt 0) {
+                $txtPass.Text = ''
+            }
+        #>
     }
     function refresh {
         param()
@@ -150,9 +157,14 @@ function Invoke-SystemStatus {
         $CN = $txtCN.Text.ToString()
         $StatusBar.Items[2].Title = "Refreshing system information from $CN"
 
+        <#
+        # 11 March 2026 Don't clear these on refresh. Simply let the
+        # new values be displayed. This prevents "blinking" on short
+        # refresh cycles
         $tvInfo.Text = ''
         $lblRun.Text = ''
         $lblUsed.Text = ''
+
         $progC.Fraction = 0
         $progC.Visible = $False
         $progMem.Visible = $False
@@ -163,11 +175,19 @@ function Invoke-SystemStatus {
         $tableView.Table = ''
         $TableView.SetNeedsDisplay()
         $procFrame.SetNeedsDisplay()
+        #>
 
         [application]::Refresh()
-        GetData
-        if ($script:online) {
 
+        $getSplat = @{Computername = $cn;ErrorAction = "Stop"}
+        if ($txtUser.Text.length -ge 1 -AND $txtPass.Text.Length -ge 1) {
+            #create a credential
+            $pw = ConvertTo-SecureString -String $txtPass.Text.ToString() -AsPlainText -Force
+            $cred = [PSCredential]::New($txtUser.Text.ToString(),$pw)
+            $getSplat.Add("Credential",$cred)
+        }
+        GetData @getSplat
+        if ($script:online) {
             $tvInfo.Text = @"
 
 $($script:os.Caption)
@@ -253,7 +273,6 @@ $($script:os.OSArchitecture)
             $script:refreshToken = $null
         }
     }
-
     function Start-RefreshTimer {
         $seconds = $script:refreshDefaultSeconds
 
@@ -268,11 +287,12 @@ $($script:os.OSArchitecture)
             }
         )
     }
+    #endregion
 
     [Application]::Init()
     [Application]::QuitKey = 'Esc'
 
-    #endregion
+    #endregion initialize
 
     #region create the main window and status bar
     $window = [Window]@{
@@ -417,7 +437,7 @@ $($script:os.OSArchitecture)
     #region process info
     $procFrame = [FrameView]@{
         X        = 3
-        Y        = $runFrame.Frame.Bottom + 2
+        Y        = $runFrame.Frame.Bottom + 1
         Width    = 60
         Height   = 15
         AutoSize = $True
@@ -449,8 +469,8 @@ $($script:os.OSArchitecture)
     #region physical info
     $physFrame = [FrameView]@{
         X      = $procFrame.Frame.Right+ 5
-        Y      = $runFrame.Y - 3
-        Width  = [Dim]::Percent(48)
+        Y      = $runFrame.Y - 5
+        Width  = [Dim]::Percent(40)
         Height = 15
         Title  = '🌟Physical Information'
     }
@@ -552,15 +572,20 @@ $($script:os.OSArchitecture)
 
     #region help info
     $usage = @'
- Instructions:
- Enter a computer name and alternate credentials
- if necessary. Click the Refresh button or the
- Alt+R shortcut to manually refresh information.
+Instructions:
 
- You can also set an automatic refresh interval.
- Click the Timer button to stop and start. If you
- change the computer, you should stop the timer
- first. Restart it after changing the computer name.
+ Enter a computer name and alternate credentials
+ Click the Refresh button, or use the Alt+R
+ shortcut to manually refresh information.
+
+ You can also set an automatic refresh interval
+ in seconds. Then click the Timer button to stop
+ and start the automatic refresh timer.
+
+ If you change the computer name, you should
+ stop the timer first. Restart the timer after
+ changing the computer name and credentials.
+ Then restart the auto refresh.
 
  Use the Quit button or Alt+Q to exit.
 
@@ -573,13 +598,13 @@ $($script:os.OSArchitecture)
 
 
 
-                     Click to show help
+            Click to show help
 '@
     $txtHelp = [TextView]@{
         X        = $physFrame.Frame.Left
         Y        = $physFrame.Frame.Bottom
         Width    = [Dim]::Percent(80)
-        Height   = 14
+        Height   = 18
         ReadOnly = $True
         Text     = $usage
     }
@@ -594,36 +619,36 @@ $($script:os.OSArchitecture)
     $window.Add($txtHelp)
 
     $txtHelp.Add_MouseClick({
-            if ($script:showUsage) {
-                $txtHelp.Text = $showUsage
-                $script:showUsage = $False
-            }
-            else {
-                $txtHelp.Text = $usage
-                $script:showUsage = $True
-            }
-            [Application]::Refresh()
-        })
+        if ($script:showUsage) {
+            $txtHelp.Text = $showUsage
+            $script:showUsage = $False
+        }
+        else {
+            $txtHelp.Text = $usage
+            $script:showUsage = $True
+        }
+        [Application]::Refresh()
+    })
 
     #endregion
 
     #region buttons
     $btnRefresh = [Button]@{
         X        = $procFrame.Frame.Left + 1
-        Y        = $procFrame.Frame.Bottom + 2
+        Y        = $procFrame.Frame.Bottom + 1
         Text     = 'Refresh'
         TabIndex = 0
     }
 
     $btnRefresh.Add_Clicked({
-            $cn = $txtCN.Text.ToString()
-            refresh $cn
-            if ($script:online) {
-                $StatusBar.Items[2].Title = 'Ready'
-            }
-            $StatusBar.Items[0].Title = "Last update: $(Get-Date -Format T)"
-            [Application]::Refresh()
-        })
+        #  $cn = $txtCN.Text.ToString()
+        refresh
+        if ($script:online) {
+            $StatusBar.Items[2].Title = 'Ready'
+        }
+        $StatusBar.Items[0].Title = "Last update: $(Get-Date -Format T)"
+        [Application]::Refresh()
+    })
     $window.Add($btnRefresh)
 
     $btnQuit = [Button]@{
@@ -656,20 +681,20 @@ $($script:os.OSArchitecture)
     $script:refreshDefaultSeconds = $txtInterval.Text.ToString()
 
     $txtInterval.Add_Leave({
-            $script:refreshDefaultSeconds = $txtInterval.Text.ToString()
-            $StatusBar.Items[2].Title = "Auto refresh set to $script:refreshDefaultSeconds seconds"
-            [Application]::Refresh()
-            if ($script:refreshToken) {
-                $StatusBar.Items[2].Title = 'Restarting Timer'
-                Stop-RefreshTimer
-                Start-RefreshTimer
-            }
-            else {
-                Start-Sleep -Seconds 2
-                $StatusBar.Items[2].Title = 'Ready'
-            }
-            [Application]::Refresh()
-        })
+        $script:refreshDefaultSeconds = $txtInterval.Text.ToString()
+        $StatusBar.Items[2].Title = "Auto refresh set to $script:refreshDefaultSeconds seconds"
+        [Application]::Refresh()
+        if ($script:refreshToken) {
+            $StatusBar.Items[2].Title = 'Restarting Timer'
+            Stop-RefreshTimer
+            Start-RefreshTimer
+        }
+        else {
+            Start-Sleep -Seconds 2
+            $StatusBar.Items[2].Title = 'Ready'
+        }
+        [Application]::Refresh()
+    })
     $window.Add($txtInterval)
 
     $btnSetTimer = [Button]@{
@@ -679,20 +704,20 @@ $($script:os.OSArchitecture)
         TabIndex = 2
     }
     $btnSetTimer.Add_Clicked({
-            #toggle the button text
-            if ($btnSetTimer.Text.ToString() -match 'Start') {
-                $btnSetTimer.Text = 'Stop Timer'
-                $seconds = $txtInterval.Text.ToString()
-                $txtInterval.Text = $seconds.ToString()
-                Start-RefreshTimer
-                $StatusBar.Items[2].Title = "Starting $seconds seconds refresh timer"
-            }
-            else {
-                $btnSetTimer.Text = 'Start Timer'
-                Stop-RefreshTimer
-            }
-            [Application]::Refresh()
-        })
+        #toggle the button text
+        if ($btnSetTimer.Text.ToString() -match 'Start') {
+            $btnSetTimer.Text = 'Stop Timer'
+            $seconds = $txtInterval.Text.ToString()
+            $txtInterval.Text = $seconds.ToString()
+            Start-RefreshTimer
+            $StatusBar.Items[2].Title = "Starting $seconds seconds refresh timer"
+        }
+        else {
+            $btnSetTimer.Text = 'Start Timer'
+            Stop-RefreshTimer
+        }
+        [Application]::Refresh()
+    })
     $window.Add($btnSetTimer)
 
     #endregion

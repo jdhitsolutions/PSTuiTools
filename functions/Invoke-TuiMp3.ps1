@@ -22,7 +22,17 @@ function Invoke-TuiMp3 {
         [ValidateNotNullOrEmpty()]
         [ValidateScript({ Test-Path -Path $_ }, ErrorMessage = 'Failed to find or validate {0}.')]
         [alias('Library')]
-        [string]$DefaultLibrary = $HOME
+        [string]$DefaultLibrary = $HOME,
+
+        [Parameter(HelpMessage = "Specify the TUI background color")]
+        [ValidateNotNullOrEmpty()]
+        [Alias('bg')]
+        [Terminal.Gui.Color]$Background = "Blue",
+
+         [Parameter(HelpMessage = "Specify the TUI foreground color")]
+        [ValidateNotNullOrEmpty()]
+        [Alias('fg')]
+        [Terminal.Gui.Color]$Foreground = "White"
     )
 
     if ($IsLinux -or $IsMacOS) {
@@ -35,6 +45,8 @@ function Invoke-TuiMp3 {
     $mrpLimit = 10
     #the path to store the most recently played
     $mrpHistory = Join-Path -Path $home -ChildPath .tuiMp3-most-recent.txt
+
+    $global:lastOpenMP3Folder = $DefaultLibrary
 
     #9 March 2026 Moved code to stop playing to an internal helper function
     #so that it can be invoked from other actions
@@ -65,45 +77,30 @@ function Invoke-TuiMp3 {
     #region create the main window and status bar
     $window = [Window]@{Title = $Title }
 
+    #2 April 2026 let the user specify the color scheme
+     $n = [Terminal.Gui.Attribute]::new($Foreground, $Background)
+     $cs = [Terminal.Gui.ColorScheme]::new()
+     $cs.Normal = $n
+     $cs.Disabled = $n
+     $cs.Focus = $n
+     $cs.HotFocus = $n
+     $cs.HotNormal = $n
+     $window.ColorScheme = $cs
+
     <#
     add an event handler to stop the player when
     the window closes if running
     #>
 
     $window.Add_Loaded({
-            $script:recentList = $mrp.children.foreach({ $_.Title.ToString() })
-        })
+        $script:recentList = $mrp.children.foreach({ $_.Title.ToString() })
+    })
 
     $window.Add_Unloaded({
-            if ($script:isPlaying) {
-                $MediaPlayer.Stop()
-            }
-        })
-
-    <# Use this code if you want to customize the Window color scheme
-    Valid colors:
-        Black
-        Blue
-        BrightBlue
-        BrightCyan
-        BrightGreen
-        BrightMagenta
-        BrightRed
-        BrightYellow
-        Brown
-        Cyan
-        DarkGray
-        Gray
-        Green
-        Magenta
-        Red
-        White
-                                       New(Foreground,Background)
-        $n = [Terminal.Gui.Attribute]::new('BrightYellow', 'Black')
-        $cs = [ColorScheme]::new()
-        $cs.normal = $n
-        $Window.ColorScheme = $cs
-    #>
+        if ($script:isPlaying) {
+            $MediaPlayer.Stop()
+        }
+    })
 
     #Create a status bar at the bottom of the TUI
     $StatusBar = [StatusBar]::New(
@@ -113,6 +110,8 @@ function Invoke-TuiMp3 {
             [StatusItem]::New('Unknown', 'Ready', {})
         )
     )
+
+    $StatusBar.ColorScheme = $cs
 
     #Add the control to the application
     [Application]::Top.Add($StatusBar)
@@ -124,17 +123,17 @@ function Invoke-TuiMp3 {
     #the menu bar actions are running private helper functions
 
     $MenuItem0 = [MenuItem]::New('_Open File', '', {
-            $open = OpenFile -filter '.mp3', '.m4a' -path $DefaultLibrary
-            if ($open) {
-                #update the field if a file was selected
-                $txtFile.Text = $open
-                #reset progress
-                $progBar.Fraction = 0
-                #if Playing then stop
-                if ($script:isPlaying) {
-                    mediaStop
-                }
+        $open = OpenFile -filter '.mp3', '.m4a' -path $global:lastOpenMP3Folder
+        if ($open) {
+            #update the field if a file was selected
+            $txtFile.Text = $open
+            #reset progress
+            $progBar.Fraction = 0
+            #if Playing then stop
+            if ($script:isPlaying) {
+                mediaStop
             }
+        }
         })
 
     #26 February 2026 Add a nested menu for recently played
@@ -165,6 +164,7 @@ function Invoke-TuiMp3 {
     $MenuBarItem1 = [MenuBarItem]::New('_Help', @($MenuItem3, $MenuItem4))
 
     $MenuBar = [MenuBar]::New(@($MenuBarItem0, $MenuBarItem1))
+    $MenuBar.ColorScheme = $cs
     $Window.Add($MenuBar)
     #endregion
 
@@ -174,17 +174,12 @@ function Invoke-TuiMp3 {
         #X and Y are relative positions in the window
         X           = 1
         Y           = 2
-        Width       = [Dim]::Percent(80)
+        Width       = [Dim]::Percent(95)
         Height      = 1
         ColorScheme = $window.ColorScheme
         Text        = 'Select an MP3 file from the menu'
+        ReadOnly    = $True
     }
-
-    $n = [Terminal.Gui.Attribute]::new('White', 'Blue')
-    $cs = [ColorScheme]::new()
-    $cs.normal = $n
-    $cs.Focus = $n
-    $txtFile.ColorScheme = $cs
 
     $txtFile.Add_TextChanged({ UpdateMP3Info })
     #add the control to the window
@@ -193,7 +188,7 @@ function Invoke-TuiMp3 {
     $progFrame = [FrameView]@{
         X      = 2
         Y      = 4
-        Width  = [Dim]::Percent(50)
+        Width  = [Dim]::Percent(55)
         Height = 5
         Title  = ''
     }
@@ -205,25 +200,24 @@ function Invoke-TuiMp3 {
         ProgressBarStyle  = 'Continuous'
         Fraction          = 0
         Width             = [Dim]::Percent(98)
+        ColorScheme       = $cs
     }
 
     $progBar.Add_MouseClick({
-            param($m)
-            $totalSeconds = $MediaPlayer.NaturalDuration.TimeSpan.TotalSeconds
-            if ($totalSeconds -gt 0) {
-                $clickX = $m.MouseEvent.X
-                $fraction = $clickX / $progBar.Frame.Width
-                $newPosition = [TimeSpan]::FromSeconds($fraction * $totalSeconds)
-                $MediaPlayer.Position = $newPosition
-                if ($script:isPlaying) { $MediaPlayer.Play() }
-                $progBar.Fraction = $fraction
-                [Application]::Refresh()
-            }
-        }.GetNewClosure())
+        param($m)
+        $totalSeconds = $MediaPlayer.NaturalDuration.TimeSpan.TotalSeconds
+        if ($totalSeconds -gt 0) {
+            $clickX = $m.MouseEvent.X
+            $fraction = $clickX / $progBar.Frame.Width
+            $newPosition = [TimeSpan]::FromSeconds($fraction * $totalSeconds)
+            $MediaPlayer.Position = $newPosition
+            if ($script:isPlaying) { $MediaPlayer.Play() }
+            $progBar.Fraction = $fraction
+            [Application]::Refresh()
+        }
+    }.GetNewClosure())
 
     $progFrame.Add($progBar)
-    # use a timeout token instead
-    $script:timeoutToken = $null
 
     # Define the update action as a scriptblock returning $true to repeat
     $updateProgress = {
@@ -268,20 +262,21 @@ function Invoke-TuiMp3 {
         ProgressBarStyle  = 'Continuous'
         Width             = 50
         Text              = 'Volume'
+        ColorScheme       = $cs
     }
     $progVol.Add_MouseClick({
-            param($m)
-            $clickX = $m.MouseEvent.X
-            $fraction = $clickX / $progVol.Frame.Width
-            $progVol.Fraction = $fraction
-            $MediaPlayer.Volume = $progVol.Fraction
-            [Application]::Refresh()
-        })
+        param($m)
+        $clickX = $m.MouseEvent.X
+        $fraction = $clickX / $progVol.Frame.Width
+        $progVol.Fraction = $fraction
+        $MediaPlayer.Volume = $progVol.Fraction
+        [Application]::Refresh()
+    })
 
     $window.Add($progVol)
 
     $btnVolUp = [Button]@{
-        X              = $progVol.Frame.Right + 1
+        X              = $progVol.Frame.Right+1
         Y              = $progVol.Y
         Text           = '+'
         Shortcut       = 'CursorUp, CtrlMask'
@@ -293,16 +288,16 @@ function Invoke-TuiMp3 {
     }
 
     $btnVolUp.Add_Clicked({
-            $MediaPlayer.Volume += .05
-            $progVol.Fraction += .05
-            [Application]::Refresh()
-        })
+        $MediaPlayer.Volume += .05
+        $progVol.Fraction += .05
+        [Application]::Refresh()
+    })
 
     $window.Add($btnVolUp)
 
     $btnVolDown = [Button]@{
-        X              = $btnVolUp.Frame.Right + 1
-        Y              = $progVol.Y
+        X              = $btnVolUp.Frame.Left
+        Y              = $btnVolUp.Frame.Bottom
         Text           = '-'
         Shortcut       = 'CursorDown, CtrlMask'
         ShortcutAction = {
@@ -313,22 +308,23 @@ function Invoke-TuiMp3 {
     }
 
     $btnVolDown.Add_Clicked({
-            $MediaPlayer.Volume -= .05
-            $progVol.Fraction -= .05
-            [Application]::Refresh()
-        })
+        $MediaPlayer.Volume -= .05
+        $progVol.Fraction -= .05
+        [Application]::Refresh()
+    })
 
     $window.Add($btnVolDown)
 
     $tvInfo = [TextView]@{
-        X         = [Pos]::right($progFrame) + 1
+        X         = [Pos]::Right($progFrame) + 1  #$btnVolUp.Frame.Right + 2
         Y         = [Pos]::Top($progFrame) - 1
-        Width     = 60
+        Width     = [Dim]::Percent(40) #60
         Height    = 10
         Multiline = $true
         Visible   = $False
+        ReadOnly  = $True
+        ColorScheme = $cs
     }
-    $tvInfo.ColorScheme = $cs
 
     $window.add($tvInfo)
 
@@ -342,36 +338,51 @@ function Invoke-TuiMp3 {
 
     #define an action when the button is clicked
     $btnPlay.Add_Clicked({
-            $script:isPlaying = $true
-            $MediaPlayer.Play()
-            $progVol.Fraction = $MediaPlayer.Volume
-            $StatusBar.Items[0].Title = $(Get-Date -Format g)
-            $StatusBar.Items[2].Title = "Playing $(Split-Path $MediaPlayer.Source.LocalPath -Leaf)"
-            $progFrame.Title = $script:musicTitle
-            # Register a 1-second repeating callback on the main loop
-            if ($null -eq $script:timeoutToken) {
-                $script:timeoutToken = [Application]::MainLoop.AddTimeout(
-                    [TimeSpan]::FromSeconds(1), $updateProgress)
-            }
-            #26 February 2026 Update recently played
-            if ($script:recentList -notcontains $txtFile.Text.ToString()) {
-                #This needs to persist outside the TUI
-                $cmd = "updateMP3Info ""$($MediaPlayer.Source.LocalPath)"" ;[Application]::Refresh()"
-                $action = [Scriptblock]::Create($cmd)
-                $add = [MenuItem]::New($txtFile.Text.ToString(), '', $action)
-                $mrp.Children += $add
-                #trim
-                if ($mrp.Children.count -gt $mrpLimit) {
-                    $mrp.children = $mrp.Children | Select-Object -Skip 1
-                }
-                #update the list
-                $script:recentList = $mrp.children.foreach({ $_.Title.ToString() })
-                #update the history
-                Set-Content -Path $mrpHistory -Value $script:recentList
-            }
+        [Application]::Refresh()
+        $script:isPlaying = $true
+        $MediaPlayer.Play()
+        $progVol.Fraction = $MediaPlayer.Volume
+        $StatusBar.Items[0].Title = $(Get-Date -Format g)
+        $StatusBar.Items[2].Title = "Playing $(Split-Path $MediaPlayer.Source.LocalPath -Leaf)"
+        $progFrame.Title = $script:musicTitle
+        # Register a 1-second repeating callback on the main loop
+        if ($null -eq $script:timeoutToken) {
+            $script:timeoutToken = [Application]::MainLoop.AddTimeout(
+                [TimeSpan]::FromSeconds(1), $updateProgress)
+        }
+        #26 February 2026 Update recently played
+        #Being overly cautious here.
+        if (($script:recentList -notcontains $txtFile.Text.ToString()) -OR ($null -eq $script:recentList) ) {
+            #This needs to persist outside the TUI
+            $cmd = "updateMP3Info ""$($MediaPlayer.Source.LocalPath)"" ;[Application]::Refresh()"
+            $action = [Scriptblock]::Create($cmd)
+            #11 March 2026 reverse the list so that the most recently played item is first
+            $new = @()
+            $new += [MenuItem]::New($txtFile.Text.ToString(), '', $action)
+            #add existing children
+            $mrp.Children.Foreach({$new += $_})
 
+            #clear children
+            $mrp.Children.Clear()
+            #re-add the new list
+            $mrp.Children += $new
+
+            #trim
+            if ($mrp.Children.count -gt $mrpLimit) {
+                $mrp.Children = $mrp.Children | Select-Object -Skip 1 -last ($mrpLimit -1)
+            }
+            $MenuBar.SetChildNeedsDisplay()
+            $MenuBar.Redraw()
             [Application]::Refresh()
-        })
+
+            #update the list
+            $script:recentList = $mrp.Children.foreach({ $_.Title.ToString() })
+            #update the history
+            Set-Content -Path $mrpHistory -Value $script:recentList
+        }
+
+        [Application]::Refresh()
+    })
     $window.Add($btnPlay)
 
     $btnPause = [Button]@{
@@ -382,16 +393,16 @@ function Invoke-TuiMp3 {
     }
 
     $btnPause.Add_Clicked({
-            $script:isPlaying = $false
-            $MediaPlayer.Pause()
-            if ($null -ne $script:timeoutToken) {
-                [Application]::MainLoop.RemoveTimeout($script:timeoutToken)
-                $script:timeoutToken = $null
-            }
-            $StatusBar.Items[2].Title = "$script:MusicTitle - Paused"
-            $StatusBar.Items[0].Title = $(Get-Date -Format g)
-            [Application]::Refresh()
-        })
+        $script:isPlaying = $false
+        $MediaPlayer.Pause()
+        if ($null -ne $script:timeoutToken) {
+            [Application]::MainLoop.RemoveTimeout($script:timeoutToken)
+            $script:timeoutToken = $null
+        }
+        $StatusBar.Items[2].Title = "$script:MusicTitle - Paused"
+        $StatusBar.Items[0].Title = $(Get-Date -Format g)
+        [Application]::Refresh()
+    })
     $window.Add($btnPause)
 
     $btnStop = [Button]@{
@@ -420,7 +431,7 @@ function Invoke-TuiMp3 {
     $window.Add($btnQuit)
 
     $txtLyrics = [TextView]@{
-        X         = $btnQuit.X + 5
+        X         = $btnStop.X + 1
         Y         = $btnQuit.Frame.Bottom + 1
         Width     = [Dim]::Percent(95)
         Height    = 25
@@ -443,6 +454,8 @@ function Invoke-TuiMp3 {
         UpdateMP3Info
     }
 
+    # use a timeout token
+    $script:timeoutToken = $null
     #Add the Window and its nested controls to the TUI application
     [Application]::Top.Add($window)
     #Invoke the TUI
@@ -453,7 +466,7 @@ function Invoke-TuiMp3 {
     #endregion
 }
 
-#helper functions
+#region helper functions
 function ShowMp3Help {
     #define help information
     [CmdletBinding()]
@@ -561,7 +574,6 @@ function updateMP3Info {
     $btnPlay.Enabled = $True
     [Application]::Refresh()
 }
-
 function quitMP3 {
     if ($MediaPlayer.position.totalSeconds -ge 1) {
         $MediaPlayer.Stop()
@@ -573,3 +585,5 @@ function quitMP3 {
     }
     [Application]::RequestStop()
 }
+
+#endregion

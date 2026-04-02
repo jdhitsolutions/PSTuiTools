@@ -47,5 +47,17 @@ if ($terminalGuiVersion -ne $RequiredVersion) {
 #dot source the module commands
 (Get-ChildItem -Path $PSScriptRoot\functions\*.ps1).ForEach({ . $_.FullName })
 
+#11 March 2026 Save last opened location
+Set-Variable -Name lastOpenMP3Folder -Value $HOME -Scope Global
+
 #endregion
+
+# on module exit clean up code to remove  global variables like lastOpenMP3Folder
+$OnRemoveScript = {
+    #clean up variables
+    Get-Variable -Name lastOpenMP3Folder -Scope Global |
+    Remove-Variable -ErrorAction SilentlyContinue -Scope Global
+}
+
+$ExecutionContext.SessionState.Module.OnRemove += $OnRemoveScript
 

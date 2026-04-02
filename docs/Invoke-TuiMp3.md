@@ -14,8 +14,7 @@ Launch a TUI MP3 player.
 ## SYNTAX
 
 ```yaml
-Invoke-TuiMp3 [[-FilePath] <String>] [-Title <String>] [-DefaultLibrary <String>]
-[<CommonParameters>]
+Invoke-TuiMp3 [[-FilePath] <String>] [-Title <String>] [-DefaultLibrary <String>] [-Background <Color>] [-Foreground <Color>]  [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -45,10 +44,10 @@ Launch the TUI MP3 player and load the specified MP3 file. You will need to clic
 ### Example 2
 
 ```powershell
-PS C:\> Invoke-TuiMp3 -DefaultLibrary "C:\Music"
+PS C:\> Invoke-TuiMp3 -DefaultLibrary "C:\Music" -Background Black -Foreground BrightGreen
 ```
 
-Launch the TUI MP3 player and set the default library to the specified folder. You can then navigate to your MP3 files more easily. This parameter has an alias of Library.
+Launch the TUI MP3 player and set the default library to the specified folder. You can then navigate to your MP3 files more easily. This parameter has an alias of Library. The example will also create a TUI with a black background and green text.
 
 ## PARAMETERS
 
@@ -98,6 +97,38 @@ Aliases:
 Required: False
 Position: Named
 Default value: PSMusic Player
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Background
+
+Specify the TUI background color. Use tab-completion to see all possible values.
+
+```yaml
+Type: Color
+Parameter Sets: (All)
+Aliases: bg
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Foreground
+
+Specify the TUI foreground color. Use tab-completion to see all possible values.
+
+```yaml
+Type: Color
+Parameter Sets: (All)
+Aliases: fg
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

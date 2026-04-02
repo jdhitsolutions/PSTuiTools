@@ -1,37 +1,35 @@
 ---
 external help file: PSTuiTools-help.xml
 Module Name: PSTuiTools
-online version: https://jdhitsolutions.com/yourls/dcd55e
+online version: https://jdhitsolutions.com/yourls/75fb8e
 schema: 2.0.0
 ---
 
-# Invoke-HelloWorld
+# Invoke-TuiGraphDemo
 
 ## SYNOPSIS
 
-Run a "Hello World" demo.
+Run a demo TUI graph.
 
 ## SYNTAX
 
 ```yaml
-Invoke-HelloWorld [<CommonParameters>]
+Invoke-TuiGraphDemo [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Every project like this needs a *Hello World* example. This is a simple TUI that displays a label and a button. When the button is clicked, the label text will change. It will revert to the original text after 5 seconds.
-
-This function has an alias of HelloWorld.
+This command will launch a demonstration TUI that uses the graphing feature to display a hypothetical bar chart showing usage percentages from a variety of file extensions.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-PS C:\> HelloWorld
+PS C:\> Invoke-TuiGraphDemo
 ```
 
-Launch the TUI using its alias.
+You can also use the tuiGraph alias.
 
 ## PARAMETERS
 

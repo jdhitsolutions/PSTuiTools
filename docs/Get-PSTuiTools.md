@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Get Sample TUI tools.
+Get sample TUI tools.
 
 ## SYNTAX
 
@@ -28,22 +28,23 @@ Get the sample TUI tools from the PSTuiTools module.
 ```powershell
 PS C:\> Get-PSTuiTools
 
-   Module: PSTuiTools [v0.5.0]
+   Module: PSTuiTools [v0.6.0]
 
 Name                 Alias         Synopsis
 ----                 -----         --------
-Get-PSTuiTools                     Get Sample TUI tools.
-Get-TuiCredential                  Prompt for credentials in a TUI.
-Invoke-HelloWorld    HelloWorld    Run a Hello World demo.
+Get-PSTuiTools                     Get sample TUI tools.
+Get-TuiCredential    tuicred       Prompt for credentials in a TUI.
+Invoke-HelloWorld    HelloWorld    Run a "Hello World" demo.
 Invoke-ProcessPeeker ProcessPeeker A TUI process viewer.
 Invoke-PSTuiTools    PSTuiTools    Show module commands in a TUI
 Invoke-ServiceInfo   ServiceInfo   A TUI for displaying service information.
 Invoke-SystemStatus  TuiStatus     Run a system status TUI monitor.
 Invoke-TuiColorDemo  TuiColorDemo  Run the TUI color demo.
+Invoke-TuiGraphDemo  tuiGraph      Run a demo TUI graph.
 Invoke-TuiMp3        tuimp3        Launch a TUI MP3 player.
 Invoke-TuiTemplate   TuiTemplate   Run the TUI template script.
 Invoke-TuiTreeDemo   tuiTree       Run a TreeView demo TUI.
-Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies
+Save-TuiAssembly                   Download Terminal.GUI and NStack assemblies.
 ```
 
 ## PARAMETERS
@@ -67,5 +68,3 @@ Learn more about PowerShell: http://jdhitsolutions.com/yourls/newsletter
 ## RELATED LINKS
 
 [Invoke-PSTuiTools](Invoke-PSTuiTools.md)
-
-[https://github.com/jdhitsolutions/PSTuiTools](https://github.com/jdhitsolutions/PSTuiTools)
